@@ -20,9 +20,10 @@ def handler(event, context):
     # Generate a presigned S3 POST URL
     s3_client = boto3.client('s3')
     try:
-        response = s3_client.generate_presigned_url('get_object',
+        response = s3_client.generate_presigned_url('put_object',
                                                     Params={'Bucket': BUCKET_NAME,
-                                                            'Key': OBJECT_NAME},
+                                                            'Key': OBJECT_NAME,
+                                                            'ContentType': "application/json"},
                                                     ExpiresIn=EXPIRATION)
     except ClientError as e:
         logging.error(e)
