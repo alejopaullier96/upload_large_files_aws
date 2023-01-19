@@ -1,10 +1,10 @@
 import boto3
 import logging
-import requests
 
 from botocore.exceptions import ClientError
 
 s3 = boto3.client('s3')
+logger = logging.getLogger()
 
 def handler(event, context):
     # Generate a presigned S3 POST URL

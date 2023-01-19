@@ -1,0 +1,33 @@
+# Here we need to provide all the configuration we will need to spin up 
+# our AWS architecture infrastructure. To deploy the serverless
+# application you must run: serverless deploy -v.
+# Note: You need to have the appropriate permission to deploy. 
+service: largeFileApiV2
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1 # region to deploy
+  iamRoleStatements: # permissions for Lambda function.
+    - Effect: "Allow"
+      Action: # which actions we have permissions to execute
+        - "s3:PutObject" 
+        - "s3:GetObject"
+        - "sns:Publish"
+      Resource: arn:aws:s3:::large-file-upload-v2/* # your S3 bucket ARN
+
+functions:
+  get_signed_url: # function name
+    handler: src/get_signed_url.handler # this is the function itself
+    events: # events are what triggers the function
+      - http: # what kind of event triggers the function
+          path: s3url
+          method: get # the type of HTTP method that will trigger
+          cors: true
+
+  execute_payload:
+    handler: src/execute_payload.handler # this is the function itself
+    events:
+      - s3: # the trigger is an upload to an s3 bucket
+          bucket: large-file-upload-v2 # your S3 bucket name
+          event: s3:ObjectCreated:* # which action (object creation/upload)

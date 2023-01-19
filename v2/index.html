@@ -1,0 +1,39 @@
+<html>
+  <body>
+    <button onclick="upload()">Upload Large Payload</button> 
+    <script>
+      const apiEndpoint = "https://i9tzepas0m.execute-api.us-east-1.amazonaws.com/dev/s3url";
+      const imageEndpoint = "./api/data/example_image.jpg";
+
+      upload = async () => {
+        const image = await getImage(); // grabs data from dummy api. This must be changed. Data must be uploaded.
+        const data = await getSignedUrl(); // get a signed URL for S3
+        const result = await uploadToS3(data.url, image); 
+        console.log("Successfully Uploaded to S3");
+      };
+
+      getImage = async () => {
+        return fetch(imageEndpoint)
+          .then((res) => res.blob())
+          .then((data) => data);
+      };
+
+      getSignedUrl = async () => {
+        return fetch(apiEndpoint)
+          .then((res) => res.json())
+          .then((data) => data);
+      };
+
+      uploadToS3 = async (url, image) => {
+        return fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/jpeg", // must be same as the pre-signed URL
+          },
+          body: image,
+        })
+          .then((data) => data);
+      };
+    </script>
+  </body>
+</html>
