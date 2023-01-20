@@ -2,8 +2,8 @@
   <body>
     <button onclick="upload()">Upload Large Payload</button> 
     <script>
-      const apiEndpoint = "https://i9tzepas0m.execute-api.us-east-1.amazonaws.com/dev/s3url";
-      const imageEndpoint = "./api/data/example_image.jpg";
+      const apiEndpoint = "https://r5fdpxt2lf.execute-api.us-east-1.amazonaws.com/dev/s3url";
+      const imageEndpoint = "./data/example_image.jpg";
 
       upload = async () => {
         const image = await getImage(); // grabs data from dummy api. This must be changed. Data must be uploaded.
@@ -19,7 +19,15 @@
       };
 
       getSignedUrl = async () => {
-        return fetch(apiEndpoint)
+        const body = {
+          id: "user-2"     
+        };
+        const event = {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify(body)
+        };
+        return fetch(apiEndpoint, event)
           .then((res) => res.json())
           .then((data) => data);
       };

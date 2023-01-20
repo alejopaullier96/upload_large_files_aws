@@ -13,7 +13,7 @@ def handler(event, context):
     :param expiration: Time in seconds for the presigned URL to remain valid
     :return: Presigned URL as string. If error, returns None.
     """
-    BUCKET_NAME = "large-file-upload-v2" # destination bucket name
+    BUCKET_NAME = "my-microservice-raw-xxx" # destination bucket name
     OBJECT_NAME = str(uuid.uuid4()) # random universal ID which will be the object name
     EXPIRATION = 60 * 5 # expiration time in seconds
 
@@ -24,7 +24,7 @@ def handler(event, context):
                                                     Params={'Bucket': BUCKET_NAME,
                                                             'Key': OBJECT_NAME,
                                                             'ContentType': "application/jpeg",
-                                                            'Metadata': {"id":"user-1"} # add user metadata
+                                                            'Metadata': json.loads(event["body"]) # add user metadata
                                                     },
                                                     ExpiresIn=EXPIRATION)
     except ClientError as e:
